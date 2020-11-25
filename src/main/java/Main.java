@@ -1,12 +1,15 @@
+import org.xml.sax.SAXException;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
         SimpleXmlConverter simpleXmlConverter = new SimpleXmlConverter();
         simpleXmlConverter.setDiverClassName("org.postgresql.Driver");
-        simpleXmlConverter.setN(2);
+        simpleXmlConverter.setN(1000000);
         simpleXmlConverter.setUsername("postgres");
         simpleXmlConverter.setPassword("2002");
         simpleXmlConverter.setUrl("jdbc:postgresql://localhost:5432/postgres");
@@ -15,9 +18,8 @@ public class Main {
         try {
             simpleXmlConverter.getValuesAndCreateXml("1.xml");
             simpleXmlConverter.convertXmlDocument("1.xml","2.xml");
-        } catch (ParserConfigurationException | TransformerConfigurationException e) {
-            e.printStackTrace();
-        } catch (TransformerException e) {
+            simpleXmlConverter.printArithmeticSumFromXml("2.xml");
+        } catch (ParserConfigurationException | TransformerException | SAXException | IOException e) {
             e.printStackTrace();
         }
     }

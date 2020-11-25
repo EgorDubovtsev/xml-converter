@@ -2,6 +2,9 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -11,6 +14,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -23,6 +27,7 @@ public class SimpleXmlConverter {
     private String password;
     private int n;
     private JdbcTemplate jdbcTemplate;
+    private DocumentBuilder documentBuilder;
 
     private JdbcTemplate getJdbcTemplate() {
         if (jdbcTemplate == null) {
@@ -76,7 +81,7 @@ public class SimpleXmlConverter {
         int[] vales = getValues();
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
         Document doc = documentBuilder.newDocument();
         Element rootElement = doc.createElement("entries");
@@ -110,8 +115,16 @@ public class SimpleXmlConverter {
         transformer.transform(xml, new StreamResult(new File(nameAfter)));
     }
 
-    public void printArithmeticSumFromXml(String documentName) {
-
+    public void printArithmeticSumFromXml(String documentName) throws IOException, SAXException {
+        Document document = documentBuilder.parse(documentName);
+        Node root = document.getDocumentElement();
+        NodeList listOfEntries = root.getChildNodes();
+        double[] values = new double[listOfEntries.getLength()];
+        for (int i=0;i<listOfEntries.getLength();i++){
+            values[i]  =Integer.parseInt(listOfEntries.item(i).getAttributes().getNamedItem("field").getNodeValue());
+        }
+        double sum = ((values[0]+values[values.length-1])*values.length)/2;
+        System.out.println(sum);
     }
 
 
