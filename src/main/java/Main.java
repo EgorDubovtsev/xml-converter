@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         SimpleXmlConverter simpleXmlConverter = new SimpleXmlConverter();
         simpleXmlConverter.setDiverClassName("org.postgresql.Driver");
-        simpleXmlConverter.setN(1000000);
+        simpleXmlConverter.setN(893434);
         simpleXmlConverter.setUsername("postgres");
         simpleXmlConverter.setPassword("2002");
         simpleXmlConverter.setUrl("jdbc:postgresql://localhost:5432/postgres");

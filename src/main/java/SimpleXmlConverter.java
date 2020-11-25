@@ -1,5 +1,8 @@
 import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -15,10 +18,13 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class SimpleXmlConverter {
     private String url;
@@ -50,9 +56,23 @@ public class SimpleXmlConverter {
     public void insertValues() {
         String insertValuesSql = "INSERT INTO TEST VALUES(?)";
         clearDb();
+        int[] values = new int[n];
         for (int i = 1; i <= n; i++) {
-            getJdbcTemplate().update(insertValuesSql, i);
+            values[i - 1] = i;
         }
+//        SqlParameterSource[] batch = SqlParameterSourceUtils
+//                .createBatch(values.toArray());
+        jdbcTemplate.batchUpdate(insertValuesSql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
+                preparedStatement.setInt(1,values[i]);
+            }
+
+            @Override
+            public int getBatchSize() {
+                return values.length;
+            }
+        });
     }
 
     private int[] getValues() {
@@ -120,10 +140,10 @@ public class SimpleXmlConverter {
         Node root = document.getDocumentElement();
         NodeList listOfEntries = root.getChildNodes();
         double[] values = new double[listOfEntries.getLength()];
-        for (int i=0;i<listOfEntries.getLength();i++){
-            values[i]  =Integer.parseInt(listOfEntries.item(i).getAttributes().getNamedItem("field").getNodeValue());
+        for (int i = 0; i < listOfEntries.getLength(); i++) {
+            values[i] = Integer.parseInt(listOfEntries.item(i).getAttributes().getNamedItem("field").getNodeValue());
         }
-        double sum = ((values[0]+values[values.length-1])*values.length)/2;
+        double sum = ((values[0] + values[values.length - 1]) * values.length) / 2;
         System.out.println(sum);
     }
 
