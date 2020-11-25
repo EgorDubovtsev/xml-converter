@@ -17,7 +17,7 @@ public class Main {
         simpleXmlConverter.insertValues();
         try {
             simpleXmlConverter.getValuesAndCreateXml("1.xml");
-            simpleXmlConverter.convertXmlDocument("1.xml","2.xml");
+            simpleXmlConverter.convertXmlDocument("1.xml", "2.xml");
             simpleXmlConverter.printArithmeticSumFromXml("2.xml");
         } catch (ParserConfigurationException | TransformerException | SAXException | IOException e) {
             e.printStackTrace();

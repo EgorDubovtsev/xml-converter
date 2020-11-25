@@ -60,12 +60,10 @@ public class SimpleXmlConverter {
         for (int i = 1; i <= n; i++) {
             values[i - 1] = i;
         }
-//        SqlParameterSource[] batch = SqlParameterSourceUtils
-//                .createBatch(values.toArray());
         jdbcTemplate.batchUpdate(insertValuesSql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
-                preparedStatement.setInt(1,values[i]);
+                preparedStatement.setInt(1, values[i]);
             }
 
             @Override
