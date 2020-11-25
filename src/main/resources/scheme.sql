@@ -1,0 +1,1 @@
+CREATE TABLE TEST (field integer primary key);
